@@ -1,6 +1,6 @@
 Authors:
 --------
-Cumar, John, Prateck, and Rajesh
+Prateek, Umar, John, and Rajesh
 
 Description:
 ------------
