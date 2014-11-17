@@ -1,6 +1,3 @@
-Authors:
-
-
 Rajesh
 
 Prateck
