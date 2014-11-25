@@ -1,6 +1,6 @@
 Authors:
 --------
-Prateek, Umar, John, and Rajesh
+Jeremy Tzou, Khuong Nguyen, and John Phillips
 
 Description:
 ------------
