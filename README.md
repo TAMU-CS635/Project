@@ -8,6 +8,8 @@ Written for a project at Texas A&M University CS635 AI Robotics. Controls an iRo
 
 Credits:
 --------
-Here is the link to the project I found the create code from: https://cs.fit.edu/Projects/robotics/Projects2010/Timmaia/roboproj.html
+The project the pycreate code comes from: https://cs.fit.edu/Projects/robotics/Projects2010/Timmaia/roboproj.html
 
-Here is a link to the original create code itself: http://www.cs.hmc.edu/~dodds/erdos/pyCreate.zip
+Pycreate Library API: https://www.rose-hulman.edu/class/csse/resources/Robotics/Pycreate.pdf
+
+The original pycreate code: http://www.cs.hmc.edu/~dodds/erdos/pyCreate.zip
