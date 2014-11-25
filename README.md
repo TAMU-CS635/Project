@@ -12,4 +12,6 @@ The project the pycreate code comes from: https://cs.fit.edu/Projects/robotics/P
 
 Pycreate Library API: https://www.rose-hulman.edu/class/csse/resources/Robotics/Pycreate.pdf
 
+Repo with updated create code: https://github.com/mgobryan/pycreate
+
 The original pycreate code: http://www.cs.hmc.edu/~dodds/erdos/pyCreate.zip
