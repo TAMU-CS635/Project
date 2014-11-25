@@ -15,3 +15,5 @@ Pycreate Library API: https://www.rose-hulman.edu/class/csse/resources/Robotics/
 Repo with updated create code: https://github.com/mgobryan/pycreate
 
 The original pycreate code: http://www.cs.hmc.edu/~dodds/erdos/pyCreate.zip
+
+GitHub repo for SimpleCV: https://github.com/sightmachine/simplecv
