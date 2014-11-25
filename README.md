@@ -8,12 +8,8 @@ Written for a project at Texas A&M University CS635 AI Robotics. Controls an iRo
 
 Credits:
 --------
-The project the pycreate code comes from: https://cs.fit.edu/Projects/robotics/Projects2010/Timmaia/roboproj.html
-
 Pycreate Library API: https://www.rose-hulman.edu/class/csse/resources/Robotics/Pycreate.pdf
 
-Repo with updated create code: https://github.com/mgobryan/pycreate
-
-The original pycreate code: http://www.cs.hmc.edu/~dodds/erdos/pyCreate.zip
+Repo where I found create code: https://github.com/mgobryan/pycreate
 
 GitHub repo for SimpleCV: https://github.com/sightmachine/simplecv
