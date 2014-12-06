@@ -14,16 +14,16 @@ sensors = robot.sensors()
 
 # drive up to ramp tracking blob location
 while(sensors[create2.CLIFF_FRONT_LEFT_SIGNAL] < 1400):
-    image = cam.getImage()
-    blobs = image.findBlobs()
-    if blobs:
-        blob = find_yellow(blobs)
-        if blob:
+    	image = cam.getImage()
+        blob = find_yellow(image)
+        if blob and blob.area() > 15000:
+	    print "blob found %s" % blob.x
             x = blob.x
             robot.setWheelVelocities(-(20 + 0.2*(x - 320)), -(20 + 0.2*(320 - x)))
         else:
-            robot.go(0, 10)
-    sensors = robot.sensors()
+            print "notthing"
+            robot.go(0, 20)
+    	sensors = robot.sensors()
 
 # drive over ramp, updating front left cliff
 while(sensors[create2.CLIFF_FRONT_LEFT_SIGNAL] > 1200):
