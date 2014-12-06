@@ -12,11 +12,11 @@ def main():
 				image.drawCircle((blob.x, blob.y), 10, color=Color.RED)
 		image.show()
 
-def find_yellow(blobs):
-	for blob in blobs:
-		rgb = blob.meanColor()
-		if rgb[-1] < 50:
-			return blob
-	return None
-
-main()
+def find_yellow(image):
+    ydist = image.colorDistance(Color.YELLOW)
+    onlyYellow = image - ydist
+    blobs = onlyYellow.findBlobs()
+    if blobs:
+	    return blobs[-1]
+    else:
+        return None
