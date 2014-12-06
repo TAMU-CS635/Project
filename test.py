@@ -19,9 +19,13 @@ while True:
     blobs = dist.findBlobs()
     if blobs:
         blobs.draw()
-    while blobs[-1].x != 640 and blobs[-1].y != 512:
-        robot.go(0,20)
+	image.show()
+	blob = blobs[-1]
+	print "largest Blob area %s x %s" % (blob.area(), blob.x)
+	if blob.area() > 1000 and blob.x > 280 and blob.x < 360:
+		robot.go(20, 0)
+	else:
+		robot.go(0, 20)
         
-    robot.go(20,0)
 #result = img - dist
 #result.show()
