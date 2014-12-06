@@ -23,9 +23,7 @@ while True:
 	blob = blobs[-1]
 	#print "largest Blob area %s x %s" % (blob.area(), blob.x)
 	if blob.area() > 6000 and blob.x > 200 and blob.x < 440:
-		robot.go(20, 0)
-		time.sleep(0.5)
-		robot.stop()
+		robot.go(40, 0)
 	else:
 		robot.go(0, 20)
 		time.sleep(0.5)
