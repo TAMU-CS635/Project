@@ -1,5 +1,5 @@
-from create import Create
-from SimpleCV import Image, Color
+from create2 import Create
+from SimpleCV import Camera, Color
 
 
 robot = Create('/dev/ttyUSB0')
@@ -13,13 +13,13 @@ while True:
     yellowDist = img.colorDistance(Color.YELLOW)
     onlyYellow = img - yellowDist
     dist = onlyYellow.colorDistance(Color.YELLOW)
-    dist = dist.binarize(200).invert()
+    dist = dist.binarize(200)
     dist.erode(2)
     
     blobs = dist.findBlobs()
     if blobs:
         blobs.draw()
-    while blobs[-1].x != 640 && blobs[-1].y != 512:
+    while blobs[-1].x != 640 and blobs[-1].y != 512:
         robot.go(0,20)
         
     robot.go(20,0)
