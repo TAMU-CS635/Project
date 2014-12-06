@@ -19,4 +19,3 @@ def find_yellow(blobs):
 			return blob
 	return None
 
-main()
