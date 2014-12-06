@@ -1,3 +1,4 @@
+import create2
 from create2 import Create
 from vision import find_yellow
 from SimpleCV import Camera
@@ -19,7 +20,9 @@ while(sensors[create2.CLIFF_FRONT_LEFT_SIGNAL] < 1400):
         blob = find_yellow(blobs)
         if blob:
             x = blob.x
-            robot.driveDirect(-(20 + (x - 200)), -(20 + (200 - x)))
+            robot.setWheelVelocities(-(20 + 0.2*(x - 320)), -(20 + 0.2*(320 - x)))
+        else:
+            robot.go(0, 10)
     sensors = robot.sensors()
 
 # drive over ramp, updating front left cliff
