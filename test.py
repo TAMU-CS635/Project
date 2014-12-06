@@ -28,6 +28,4 @@ while True:
 		robot.go(0, 20)
 		time.sleep(0.5)
 		robot.stop()
-        
-#result = img - dist
-#result.show()
+
