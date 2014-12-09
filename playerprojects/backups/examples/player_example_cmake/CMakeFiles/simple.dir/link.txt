@@ -1,0 +1,1 @@
+/usr/bin/cc      CMakeFiles/simple.dir/simple.o  -o simple  -L/home/netbook/local/lib -rdynamic -lplayerc -lm -lz -lplayerinterface -lplayerwkb -lplayercommon -Wl,-rpath,/home/netbook/local/lib 

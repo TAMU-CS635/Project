@@ -1,0 +1,3 @@
+/home/netbook/test_player/CMakeFiles/simple.dir
+/home/netbook/test_player/CMakeFiles/speech_c_client.dir
+/home/netbook/test_player/CMakeFiles/vmap.dir
