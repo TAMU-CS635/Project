@@ -1,0 +1,15 @@
+all: vision
+
+vision: vision.o Create.o
+	g++ `pkg-config --cflags opencv` vision.o Create.o -o vision `pkg-config --libs opencv` -L ~/local/lib -rdynamic -lplayerc -lm -lz -lplayerinterface -lplayerwkb -lplayercommon -Wl,-rpath,~/local/lib
+	rm *.o
+
+vision.o: vision.cc Create.h
+	g++ -o vision.o -I ~/local/include/player-3.0 -c vision.cc
+
+Create.o: Create.cc Create.h
+	g++ -o Create.o -I ~/local/include/player-3.0 -c Create.cc
+
+clean:
+	rm -f *.o IRobot_Test
+.PHONY: clean

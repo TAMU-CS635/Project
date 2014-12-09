@@ -1,0 +1,4 @@
+open a terminal:
+type "player create.cfg"
+open a new terminal:
+run binary file.
