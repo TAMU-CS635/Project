@@ -24,7 +24,8 @@ int main()
     //Initialize IRobot Create
     Create create;
     create.lights(0, 0, 0);
-
+    create.motor_raw(0.1, 0.1);
+    usleep(100000);
     // Initialize capturing live feed from the camera
     CvCapture* capture = 0;
     
@@ -62,38 +63,46 @@ int main()
         cvMoments(imgYellowThresh, moments, 1);
         
         // The actual moment values
-        double moment10 = cvGetSpatialMoment(moments, 1, 0);
-        double moment01 = cvGetSpatialMoment(moments, 0, 1);
+        static double moment10 = 0;
+        static double moment01 = 0;
+        moment10 = cvGetSpatialMoment(moments, 1, 0);
+        moment01 = cvGetSpatialMoment(moments, 0, 1);
+        static double area = 0;
+        area = cvGetCentralMoment(moments, 0, 0);
+
+        if(area > 5000){
+            // Holding the last and current ball positions
+            static int posX = 0;
         
-        double area = cvGetCentralMoment(moments, 0, 0);
-        if(area > 100000){
-            create.move(velocity);
-            usleep(100000);
+            static int posY = 0;
+        
+            posX = moment10/area;
+            posY = moment01/area;
+
+            static float angularSpeed = 0;
+            angularSpeed = (float)(320 - posX) / (float)(1600);
+
+            create.motor_raw(0,0);
+            usleep(10);
+            create.motor_raw(velocity, angularSpeed);
+            usleep(10);
         }
         else{
-            create.motor_raw(0,-0.349);
-            usleep(100000);
-            create.motor_raw(0, 0);
-            usleep(100000);
+            create.motor_raw(0,0.38);
+            usleep(10);
+            //create.motor_raw(0, 0);
+            //usleep(100000);
         }
-
-        // Holding the last and current ball positions
-        static int posX = 0;
-        
-        static int posY = 0;
-        
-        posX = moment10/area;
-        posY = moment01/area;
 
         cvShowImage("thresh", imgYellowThresh);
 
         // Wait for a keypress
-        //int c = cvWaitKey(10);
-        //if(c!=-1)
-        //{
+        int c = cvWaitKey(10);
+        if(c!=-1)
+        {
             // If pressed, break out of the loop
-            //break;
-        //}
+            break;
+        }
         // Release the thresholded image+moments... we need no memory leaks.. please
         cvReleaseImage(&imgYellowThresh);
     }
