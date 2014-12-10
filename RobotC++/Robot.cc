@@ -8,6 +8,7 @@
 #include <libplayerc/playerc.h>
 
 float velocity = 0.1;
+float old_area = 0;
 // number of ir readings in a row to test for ramp
 int maxRampCounter = 20;
 
@@ -97,8 +98,12 @@ int main()
         moment01 = cvGetSpatialMoment(moments, 0, 1);
         static double area = 0;
         area = cvGetCentralMoment(moments, 0, 0);
-
-        if(area > 5000){
+        
+        if(area > 5000 && area < 500000){
+            if(old_area != 0 && old_area > area)
+                velocity = velocity * (area/old_area);
+            old_area = area;
+            
             // Holding the current position of the object
             static int posX = 0;
         
@@ -111,6 +116,10 @@ int main()
             angularSpeed = (float)(320 - posX) / (float)(1600);
 
             create.motor_raw(-velocity, angularSpeed);
+            usleep(10);
+        }
+        else if(area >= 500000){
+            create.motor_raw(0,0);
             usleep(10);
         }
         else{

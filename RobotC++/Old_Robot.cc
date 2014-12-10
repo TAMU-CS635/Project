@@ -8,13 +8,16 @@
 #include <libplayerc/playerc.h>
 
 float velocity = 0.1;
+// number of ir readings in a row to test for ramp
+int maxRampCounter = 20;
+
 IplImage* GetThresholdedImage(IplImage* img)
 {
     // Convert the image into an HSV image
     IplImage* imgHSV = cvCreateImage(cvGetSize(img), 8, 3);
     cvCvtColor(img, imgHSV, CV_BGR2HSV);
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
-    cvInRangeS(imgHSV, cvScalar(20, 100, 100), cvScalar(30, 255, 255), imgThreshed);
+    cvInRangeS(imgHSV, cvScalar(20, 90, 90), cvScalar(90, 255, 255), imgThreshed);
     cvReleaseImage(&imgHSV);
     return imgThreshed;
 }
@@ -24,8 +27,13 @@ int main()
     //Initialize IRobot Create
     Create create;
     create.lights(0, 0, 0);
-    create.motor_raw(0.1, 0.1);
-    usleep(100000);
+
+    create.calibrate_ir();
+
+    Create::ir_values ir = create.read_ir();
+
+    std::cout << "ir left: " << ir.left << " right: " << ir.right << " fleft: " << ir.fleft << " fright: " << ir.fright << std::endl;
+
     // Initialize capturing live feed from the camera
     CvCapture* capture = 0;
     
@@ -42,22 +50,42 @@ int main()
     // This image holds the "scribble" data...
     // the tracked positions of the ball
     //IplImage* imgScribble = NULL;
+    int rampCounter = 0;
+
     // An infinite loop
     while(true)
     {
+        // update ir reading values
+        ir = create.read_ir();
+        usleep(10);
+        
+        std::cout << "ir left: " << ir.left << " right: " << ir.right << " fleft: " << ir.fleft << " fright: " << ir.fright << std::endl;
+        // check if we are on the ramp
+        if (ir.fleft > 1280 && ir.fright > 1280)
+            rampCounter++;
+        else
+            rampCounter = 0;
+
+        // check if we have been on ramp long enough
+        if (rampCounter > maxRampCounter){
+            create.motor_raw(0,0);
+            usleep(100000);
+            break;
+        }
+        
         // Will hold a frame captured from the camera
         IplImage* frame = 0;
         frame = cvQueryFrame(capture);
         // If we couldn't grab a frame... quit
         if(!frame)
             break;
-        // If this is the first frame, we need to initialize it
-        //if(imgScribble == NULL)
-        //{
-        //    imgScribble = cvCreateImage(cvGetSize(frame), 8, 3);
-        //}
+
         // Holds the yellow thresholded image (yellow = white, rest = black)
         IplImage* imgYellowThresh = GetThresholdedImage(frame);
+        
+        //Smooth the binary image using Gaussian kernel
+        cvSmooth(imgYellowThresh, imgYellowThresh, CV_GAUSSIAN,3,3);
+        
         // Calculate the moments to estimate the position of the ball
         CvMoments *moments = (CvMoments*)malloc(sizeof(CvMoments));
         cvMoments(imgYellowThresh, moments, 1);
@@ -71,7 +99,7 @@ int main()
         area = cvGetCentralMoment(moments, 0, 0);
 
         if(area > 5000){
-            // Holding the last and current ball positions
+            // Holding the current position of the object
             static int posX = 0;
         
             static int posY = 0;
@@ -80,18 +108,14 @@ int main()
             posY = moment01/area;
 
             static float angularSpeed = 0;
-            angularSpeed = (float)(320 - posX) / (float)(3200);
+            angularSpeed = (float)(320 - posX) / (float)(1600);
 
-            create.motor_raw(0,0);
-            usleep(10);
-            create.motor_raw(velocity, angularSpeed);
+            create.motor_raw(-velocity, angularSpeed);
             usleep(10);
         }
         else{
             create.motor_raw(0,0.38);
             usleep(10);
-            //create.motor_raw(0, 0);
-            //usleep(100000);
         }
 
         cvShowImage("thresh", imgYellowThresh);
@@ -106,7 +130,36 @@ int main()
         // Release the thresholded image+moments... we need no memory leaks.. please
         cvReleaseImage(&imgYellowThresh);
     }
+
+    // driving over the ramp
+    rampCounter = 0;
+    while(true){
+        ir = create.read_ir();
+	std::cout << "right: " << ir.right << " left: " << ir.left << std::endl;
+        if (ir.fleft < 1150 || ir.fright < 1150){
+            rampCounter++;
+        } else {
+            rampCounter = 0;
+        }
+
+        if (rampCounter > maxRampCounter){
+            create.motor_raw(0,0);
+            usleep(10);
+            break;
+        }
+        create.move(-velocity);
+        usleep(10);
+        if (ir.left < 600){
+            create.motor_raw(velocity, 0.5);
+            usleep(100000);
+        }
+        else if (ir.right < 600){
+            create.motor_raw(velocity, -0.5);
+            usleep(100000);
+        }
+    }
     // We're done using the camera. Other applications can now use it
     cvReleaseCapture(&capture);
+    create.shutdown();
     return 0;
 }
