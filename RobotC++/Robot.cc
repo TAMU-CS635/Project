@@ -154,7 +154,7 @@ int main()
         static double area = 0;
         area = cvGetCentralMoment(moments, 0, 0);
         
-        if(area > 5000 && area < 100000){
+        if(area > 5000 && area < 150000){
 //            if(old_area != 0 && area > old_area)
 //                velocity = velocity * (area/old_area);
 //            old_area = area;
@@ -173,9 +173,9 @@ int main()
             create.motor_raw(-velocity, angularSpeed);
             usleep(10);
         }
-        else if(area >= 100000){
-            create.motor_raw(0,0);
-            usleep(10);
+        else if(area >= 150000){
+//            create.motor_raw(0,0);
+//            usleep(10);
             img_mat = Mat(frame, true);
             Mat test(1,img_area,CV_32FC1);
             
@@ -187,7 +187,8 @@ int main()
             }
             int testid = svm.predict(test);
             if (testid==2) {
-                run_over_ramp(create, ir, rampCounter);
+                break;
+                //run_over_ramp(create, ir, rampCounter);
             }
         }
         else{
@@ -209,7 +210,7 @@ int main()
     }
 
     // driving over the ramp
-    //run_over_ramp(create, ir, rampCounter);
+    run_over_ramp(create, ir, rampCounter);
 
     // We're done using the camera. Other applications can now use it
     cvReleaseCapture(&capture);
