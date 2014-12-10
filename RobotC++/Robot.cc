@@ -155,9 +155,9 @@ int main()
         area = cvGetCentralMoment(moments, 0, 0);
         
         if(area > 5000 && area < 100000){
-            if(old_area != 0 && area > old_area)
-                velocity = velocity * (area/old_area);
-            old_area = area;
+//            if(old_area != 0 && area > old_area)
+//                velocity = velocity * (area/old_area);
+//            old_area = area;
             
             // Holding the current position of the object
             static int posX = 0;
