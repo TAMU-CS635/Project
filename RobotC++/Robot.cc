@@ -1,16 +1,19 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include <opencv2/ml/ml.hpp>
 #include <stdlib.h>
 #include <stdio.h>
 #include "Create.h"
 #include <unistd.h>
 #include <libplayerc/playerc.h>
+#include <string.h>
 
 float velocity = 0.1;
 float old_area = 0;
 // number of ir readings in a row to test for ramp
 int maxRampCounter = 20;
+const string learned_lib = "learned_lib";
 
 IplImage* GetThresholdedImage(IplImage* img)
 {
@@ -18,13 +21,67 @@ IplImage* GetThresholdedImage(IplImage* img)
     IplImage* imgHSV = cvCreateImage(cvGetSize(img), 8, 3);
     cvCvtColor(img, imgHSV, CV_BGR2HSV);
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
-    cvInRangeS(imgHSV, cvScalar(20, 90, 90), cvScalar(90, 255, 255), imgThreshed);
+    cvInRangeS(imgHSV, cvScalar(20, 90, 90), cvScalar(30, 255, 255), imgThreshed);
     cvReleaseImage(&imgHSV);
     return imgThreshed;
 }
 
+void get_to_mid_from_left(){
+    
+}
+
+void get_to_mid_from_left_mid(){
+    
+}
+
+void get_to_mid_from_right(){
+    
+}
+
+void get_to_mid_from_right_mid(){
+    
+}
+
+void run_over_ramp(Create create, Create::ir_values ir, int rampCounter){
+    // driving over the ramp
+    rampCounter = 0;
+    while(true){
+        ir = create.read_ir();
+        std::cout << "right: " << ir.right << " left: " << ir.left << std::endl;
+        if (ir.fleft < 1150 || ir.fright < 1150){
+            rampCounter++;
+        } else {
+            rampCounter = 0;
+        }
+        
+        if (rampCounter > maxRampCounter){
+            create.motor_raw(0,0);
+            usleep(10);
+            break;
+        }
+        create.move(-velocity);
+        usleep(10);
+        if (ir.left < 600){
+            create.motor_raw(velocity, 0.5);
+            usleep(100000);
+        }
+        else if (ir.right < 600){
+            create.motor_raw(velocity, -0.5);
+            usleep(100000);
+        }
+    }
+}
+
 int main()
 {
+    //Initialize learning machine
+    int img_area = 1280*960;
+    Mat img_mat;
+    int ii = 0;
+    CvSVM svm;
+    //Load learned library
+    svm.load(learned_lib);
+    
     //Initialize IRobot Create
     Create create;
     create.lights(0, 0, 0);
@@ -99,8 +156,8 @@ int main()
         static double area = 0;
         area = cvGetCentralMoment(moments, 0, 0);
         
-        if(area > 5000 && area < 500000){
-            if(old_area != 0 && old_area > area)
+        if(area > 5000 && area < 100000){
+            if(old_area != 0 && area > old_area)
                 velocity = velocity * (area/old_area);
             old_area = area;
             
@@ -118,9 +175,22 @@ int main()
             create.motor_raw(-velocity, angularSpeed);
             usleep(10);
         }
-        else if(area >= 500000){
+        else if(area >= 100000){
             create.motor_raw(0,0);
             usleep(10);
+            img_mat = Mat(frame, true);
+            Mat test(1,img_area,CV_32FC1);
+            
+            ii = 0; // Current column in training_mat
+            for (int i = 0; i<img_mat.rows; i++) {
+                for (int j = 0; j < img_mat.cols; j++) {
+                    test.at<float>(0,ii++) = img_mat.at<uchar>(i,j);
+                }
+            }
+            int testid = svm.predict(test);
+            if (testid==2) {
+                run_over_ramp(create, ir, rampCounter);
+            }
         }
         else{
             create.motor_raw(0,0.38);
@@ -141,32 +211,33 @@ int main()
     }
 
     // driving over the ramp
-    rampCounter = 0;
-    while(true){
-        ir = create.read_ir();
-	std::cout << "right: " << ir.right << " left: " << ir.left << std::endl;
-        if (ir.fleft < 1150 || ir.fright < 1150){
-            rampCounter++;
-        } else {
-            rampCounter = 0;
-        }
-
-        if (rampCounter > maxRampCounter){
-            create.motor_raw(0,0);
-            usleep(10);
-            break;
-        }
-        create.move(-velocity);
-        usleep(10);
-        if (ir.left < 600){
-            create.motor_raw(velocity, 0.5);
-            usleep(100000);
-        }
-        else if (ir.right < 600){
-            create.motor_raw(velocity, -0.5);
-            usleep(100000);
-        }
-    }
+    //run_over_ramp(create, ir, rampCounter);
+//    rampCounter = 0;
+//    while(true){
+//        ir = create.read_ir();
+//        std::cout << "right: " << ir.right << " left: " << ir.left << std::endl;
+//        if (ir.fleft < 1150 || ir.fright < 1150){
+//            rampCounter++;
+//        } else {
+//            rampCounter = 0;
+//        }
+//
+//        if (rampCounter > maxRampCounter){
+//            create.motor_raw(0,0);
+//            usleep(10);
+//            break;
+//        }
+//        create.move(-velocity);
+//        usleep(10);
+//        if (ir.left < 600){
+//            create.motor_raw(velocity, 0.5);
+//            usleep(100000);
+//        }
+//        else if (ir.right < 600){
+//            create.motor_raw(velocity, -0.5);
+//            usleep(100000);
+//        }
+//    }
     // We're done using the camera. Other applications can now use it
     cvReleaseCapture(&capture);
     create.shutdown();
