@@ -1,11 +1,11 @@
 // OpenCv.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
-#include <cv.h>
-#include <cxcore.h>
-#include <highgui.h>
+#include "opencv2/opencv.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 #include <opencv2/ml/ml.hpp>
+#include <stdio.h>
 
 
 using namespace cv;
