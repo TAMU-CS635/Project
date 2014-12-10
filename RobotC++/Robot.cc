@@ -9,11 +9,12 @@
 #include <libplayerc/playerc.h>
 #include <string.h>
 
+using namespace cv;
+
 float velocity = 0.1;
 float old_area = 0;
 // number of ir readings in a row to test for ramp
 int maxRampCounter = 20;
-const string learned_lib = "learned_lib";
 
 IplImage* GetThresholdedImage(IplImage* img)
 {
@@ -80,7 +81,7 @@ int main()
     int ii = 0;
     CvSVM svm;
     //Load learned library
-    svm.load(learned_lib);
+    svm.load("learned_lib");
     
     //Initialize IRobot Create
     Create create;
@@ -105,9 +106,6 @@ int main()
     }
     // The window we'll be using
     cvNamedWindow("thresh");
-    // This image holds the "scribble" data...
-    // the tracked positions of the ball
-    //IplImage* imgScribble = NULL;
     int rampCounter = 0;
 
     // An infinite loop
@@ -197,7 +195,7 @@ int main()
             usleep(10);
         }
 
-        cvShowImage("thresh", imgYellowThresh);
+//        cvShowImage("thresh", imgYellowThresh);
 
         // Wait for a keypress
         int c = cvWaitKey(10);
@@ -212,32 +210,7 @@ int main()
 
     // driving over the ramp
     //run_over_ramp(create, ir, rampCounter);
-//    rampCounter = 0;
-//    while(true){
-//        ir = create.read_ir();
-//        std::cout << "right: " << ir.right << " left: " << ir.left << std::endl;
-//        if (ir.fleft < 1150 || ir.fright < 1150){
-//            rampCounter++;
-//        } else {
-//            rampCounter = 0;
-//        }
-//
-//        if (rampCounter > maxRampCounter){
-//            create.motor_raw(0,0);
-//            usleep(10);
-//            break;
-//        }
-//        create.move(-velocity);
-//        usleep(10);
-//        if (ir.left < 600){
-//            create.motor_raw(velocity, 0.5);
-//            usleep(100000);
-//        }
-//        else if (ir.right < 600){
-//            create.motor_raw(velocity, -0.5);
-//            usleep(100000);
-//        }
-//    }
+
     // We're done using the camera. Other applications can now use it
     cvReleaseCapture(&capture);
     create.shutdown();
