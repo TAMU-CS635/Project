@@ -11,7 +11,7 @@ using namespace cv;
 
 int main()
 {
-    chdir("/Users/khuongnguyen/Desktop/SVM_Test/Captured_Images");
+    chdir("/home/netbook/Downloads/Captured_Images");
     // Initialize capturing live feed from the camera device 1
     VideoCapture capture = VideoCapture(1);
     // Couldn't get a device? Throw an error and quit
