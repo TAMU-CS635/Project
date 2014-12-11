@@ -15,7 +15,7 @@ int test_sample = 14;
 
 int main()
 {
-    int img_area = 1280*960;
+    int img_area = 320*240;
     Mat img_mat;
     int ii = 0;
 
@@ -27,6 +27,7 @@ int main()
     for(int n = 0; n < test_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_CUBIC);
         Mat test(1,img_area,CV_32FC1);
     
         ii = 0; // Current column in training_mat
@@ -48,10 +49,10 @@ int main()
                 std::cout << file << " is in the middle : " << testid << std::endl;
                 break;
             case 3:
-                std::cout << file << " is on the right : " << testid << std::endl;
+                std::cout << file << " is on the right_mid : " << testid << std::endl;
                 break;
             case 4:
-                std::cout << file << " is on the right_mid : " << testid << std::endl;
+                std::cout << file << " is on the right : " << testid << std::endl;
                 break;
             default:
                 break;

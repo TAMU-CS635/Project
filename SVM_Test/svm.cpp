@@ -11,11 +11,11 @@
 using namespace cv;
 using namespace std;
 
-int left_sample = 25;
-int left_mid_sample = 32;
-int mid_sample = 28;
-int right_sample = 34;
-int right_mid_sample = 32;
+int left_sample = 36;
+int left_mid_sample = 36;
+int mid_sample = 36;
+int right_mid_sample = 41;
+int right_sample = 37;
 
 //int left_sample = 10;
 //int left_mid_sample = 10;
@@ -26,7 +26,7 @@ int right_mid_sample = 32;
 int main()
 {
     int num_files = left_sample + left_mid_sample + mid_sample + right_sample + right_mid_sample;
-    int img_area = 1280*960;
+    int img_area = 320*240;
     Mat img_mat;
     int ii = 0;
     int counter = 0;
@@ -38,6 +38,7 @@ int main()
     for(int n = 0; n < left_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_LINEAR);
         ii = 0; // Current column in training_mat
         for (int i = 0; i<img_mat.rows; i++) {
             for (int j = 0; j < img_mat.cols; j++) {
@@ -53,6 +54,7 @@ int main()
     for(int n = 0; n < left_mid_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_LINEAR);
         ii = 0; // Current column in training_mat
         for (int i = 0; i<img_mat.rows; i++) {
             for (int j = 0; j < img_mat.cols; j++) {
@@ -68,6 +70,7 @@ int main()
     for(int n = 0; n < mid_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_LINEAR);
         ii = 0; // Current column in training_mat
         for (int i = 0; i<img_mat.rows; i++) {
             for (int j = 0; j < img_mat.cols; j++) {
@@ -78,11 +81,12 @@ int main()
         counter++;
     }
     
-    //Construct trainning matrix for right region
-    chdir("/Users/khuongnguyen/Desktop/SVM_Test/Right");
-    for(int n = 0; n < right_sample; n++){
+    //Construct trainning matrix for right_mid region
+    chdir("/Users/khuongnguyen/Desktop/SVM_Test/Right_Mid");
+    for(int n = 0; n < right_mid_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_LINEAR);
         ii = 0; // Current column in training_mat
         for (int i = 0; i<img_mat.rows; i++) {
             for (int j = 0; j < img_mat.cols; j++) {
@@ -93,11 +97,12 @@ int main()
         counter++;
     }
     
-    //Construct trainning matrix for right_mid region
-    chdir("/Users/khuongnguyen/Desktop/SVM_Test/Right_Mid");
-    for(int n = 0; n < right_mid_sample; n++){
+    //Construct trainning matrix for right region
+    chdir("/Users/khuongnguyen/Desktop/SVM_Test/Right");
+    for(int n = 0; n < right_sample; n++){
         const string file = to_string(n) + ".jpg";
         img_mat = imread(file,0); // I used 0 for greyscale
+        resize(img_mat, img_mat, Size(320, 240), 0, 0, INTER_LINEAR);
         ii = 0; // Current column in training_mat
         for (int i = 0; i<img_mat.rows; i++) {
             for (int j = 0; j < img_mat.cols; j++) {
